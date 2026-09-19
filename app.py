@@ -1,4 +1,6 @@
+import os
 import streamlit as st
+import pandas as pd
 
 from src.data_loader import load_data
 
@@ -7,6 +9,8 @@ from src.indicators import (
     calculate_ema,
     calculate_returns,
     calculate_volatility,
+    calculate_correlation,
+    calculate_rolling_correlation,
 )
 
 from src.strategies import (
@@ -17,15 +21,17 @@ from src.strategies import (
 )
 
 from src.backtest import Backtester
-
 from src.metrics import calculate_metrics
+
 
 from src.ai_analysis import analyze_market
 
 
-# ==================================================
+
+
+# =
 # PAGE CONFIGURATION
-# ==================================================
+# =
 
 st.set_page_config(
     page_title="ASVT TITANS",
@@ -34,9 +40,9 @@ st.set_page_config(
 )
 
 
-# ==================================================
+# =
 # TITLE
-# ==================================================
+# =
 
 st.title("ASVT TITANS")
 
@@ -45,9 +51,9 @@ st.subheader(
 )
 
 
-# ==================================================
+# =
 # ASSET TICKERS
-# ==================================================
+# =
 
 asset_tickers = {
     "Gold": "GC=F",
@@ -56,9 +62,9 @@ asset_tickers = {
 }
 
 
-# ==================================================
+# =
 # SIDEBAR
-# ==================================================
+# =
 
 st.sidebar.header("Dashboard Settings")
 
@@ -100,16 +106,15 @@ transaction_cost_percent = st.sidebar.number_input(
 )
 
 
-# ==================================================
-# LOAD MARKET DATA
-# ==================================================
+# =
+# LOAD SELECTED ASSET DATA
+# =
 
 ticker = asset_tickers[asset]
 
 st.info(
     f"Loading historical data for {asset}..."
 )
-
 
 try:
 
@@ -143,9 +148,9 @@ except Exception as e:
     st.stop()
 
 
-# ==================================================
+# =
 # APPLY SELECTED STRATEGY
-# ==================================================
+# =
 
 if strategy == "SMA Crossover":
 
@@ -186,12 +191,11 @@ else:
     strategy_data = data.copy()
 
 
-# ==================================================
+# =
 # CURRENT SELECTION
-# ==================================================
+# =
 
 st.write("### Current Selection")
-
 
 col1, col2, col3, col4 = st.columns(4)
 
@@ -228,9 +232,9 @@ with col4:
     )
 
 
-# ==================================================
+# =
 # MARKET DATA
-# ==================================================
+# =
 
 st.write("### Market Data")
 
@@ -282,9 +286,9 @@ with col3:
     )
 
 
-# ==================================================
+# =
 # PRICE CHART
-# ==================================================
+# =
 
 st.write(
     "### Price & Moving Averages"
@@ -320,9 +324,9 @@ st.line_chart(
 )
 
 
-# ==================================================
+# =
 # STRATEGY SIGNAL
-# ==================================================
+# =
 
 st.write(
     "### Strategy Signal"
@@ -355,19 +359,19 @@ else:
     )
 
 
-# ==================================================
+# =
 # BACKTEST
-# ==================================================
+# =
 
 st.write(
     "### Backtesting"
 )
 
 
-# Backtester expects lowercase "signal"
-
 backtest_data = strategy_data.copy()
 
+
+# Backtester expects lowercase "signal"
 
 backtest_data["signal"] = (
     backtest_data["Signal"]
@@ -375,7 +379,6 @@ backtest_data["signal"] = (
 
 
 # Convert percentage to decimal
-
 # 0.1% -> 0.001
 
 transaction_cost = (
@@ -406,9 +409,9 @@ except Exception as e:
     st.stop()
 
 
-# ==================================================
+# =
 # PERFORMANCE METRICS
-# ==================================================
+# =
 
 st.write(
     "### Performance Metrics"
@@ -461,9 +464,9 @@ with metric_col4:
     )
 
 
-# ==================================================
+# =
 # BUY & HOLD COMPARISON
-# ==================================================
+# =
 
 st.write(
     "### Strategy vs Buy & Hold"
@@ -489,9 +492,9 @@ with benchmark_col2:
     )
 
 
-# ==================================================
+# =
 # EQUITY CURVE
-# ==================================================
+# =
 
 st.write(
     "### Portfolio Equity Curve"
@@ -508,9 +511,9 @@ st.line_chart(
 )
 
 
-# ==================================================
+# =
 # TRADING ACTIVITY
-# ==================================================
+# =
 
 st.write(
     "### Trading Activity"
@@ -536,9 +539,9 @@ with trade_col2:
     )
 
 
-# ==================================================
+# =
 # TRADE LOG
-# ==================================================
+# =
 
 trade_log = (
     backtester.get_trade_log()
@@ -566,9 +569,9 @@ else:
     )
 
 
-# ==================================================
+# =
 # RECENT STRATEGY DATA
-# ==================================================
+# =
 
 st.write(
     "### Recent Strategy Data"
@@ -628,9 +631,140 @@ st.dataframe(
 )
 
 
-# ==================================================
+# =
+# MULTI-ASSET CORRELATION
+# =
+
+st.write(
+    "## 📊 Multi-Asset Correlation Analysis"
+)
+
+
+st.write(
+    "Correlation between Gold, Bitcoin and NVIDIA "
+    "based on daily returns."
+)
+
+
+try:
+
+    gold_data = load_data(
+        "GC=F"
+    )
+
+    bitcoin_data = load_data(
+        "BTC-USD"
+    )
+
+    nvidia_data = load_data(
+        "NVDA"
+    )
+
+
+    multi_asset_prices = pd.DataFrame({
+
+        "Gold": gold_data["Close"],
+
+        "Bitcoin": bitcoin_data["Close"],
+
+        "NVIDIA": nvidia_data["Close"]
+
+    }).dropna()
+
+
+    correlation_matrix = calculate_correlation(
+        multi_asset_prices
+    )
+
+
+    st.write(
+        "### Correlation Matrix"
+    )
+
+
+    st.dataframe(
+        correlation_matrix.style.format(
+            "{:.2f}"
+        ).background_gradient(
+            cmap="RdBu",
+            vmin=-1,
+            vmax=1
+        ),
+        use_container_width=True
+    )
+
+
+except Exception as e:
+
+    st.error(
+        f"Correlation analysis failed: {e}"
+    )
+
+
+# =
+# ROLLING CORRELATION
+# =
+
+st.write(
+    "### Rolling Correlation"
+)
+
+
+try:
+
+    rolling_pairs = {
+
+        "Gold vs Bitcoin":
+            multi_asset_prices["Gold"].rolling(
+                30
+            ).corr(
+                multi_asset_prices["Bitcoin"]
+            ),
+
+        "Gold vs NVIDIA":
+            multi_asset_prices["Gold"].rolling(
+                30
+            ).corr(
+                multi_asset_prices["NVIDIA"]
+            ),
+
+        "Bitcoin vs NVIDIA":
+            multi_asset_prices["Bitcoin"].rolling(
+                30
+            ).corr(
+                multi_asset_prices["NVIDIA"]
+            )
+    }
+
+
+    selected_pair = st.selectbox(
+        "Select Correlation Pair",
+        list(rolling_pairs.keys())
+    )
+
+
+    selected_rolling = (
+        rolling_pairs[selected_pair]
+        .dropna()
+        .rename("Correlation")
+    )
+
+
+    st.line_chart(
+        selected_rolling
+    )
+
+
+except Exception as e:
+
+    st.error(
+        f"Rolling correlation failed: {e}"
+    )
+
+
+# =
 # AI MARKET ANALYSIS
-# ==================================================
+# =
 
 st.write(
     "### 🤖 AI Market Analysis"
@@ -641,62 +775,78 @@ if st.button(
     "Analyze Market with AI"
 ):
 
-    latest_return = (
-        float(
-            strategy_data[
-                "Daily_Return"
-            ].iloc[-1]
+    # Check API key before importing AI module
+
+    if not os.getenv("OPENAI_API_KEY"):
+
+        st.warning(
+            "AI analysis is currently unavailable. "
+            "An OpenAI API key is required."
         )
-        * 100
-    )
+
+    else:
+
+        try:
+
+            from src.ai_analysis import analyze_market
 
 
-    latest_volatility = (
-        float(
-            strategy_data[
-                "Annualized_Volatility"
-            ].iloc[-1]
-        )
-        * 100
-    )
+            latest_return = (
+                float(
+                    strategy_data[
+                        "Daily_Return"
+                    ].iloc[-1]
+                )
+                * 100
+            )
 
 
-    total_return = (
-        metrics[
-            "Total Return (%)"
-        ]
-    )
+            latest_volatility = (
+                float(
+                    strategy_data[
+                        "Annualized_Volatility"
+                    ].iloc[-1]
+                )
+                * 100
+            )
 
 
-    sharpe = (
-        metrics[
-            "Sharpe Ratio"
-        ]
-    )
+            total_return = (
+                metrics[
+                    "Total Return (%)"
+                ]
+            )
 
 
-    max_drawdown = (
-        metrics[
-            "Max Drawdown (%)"
-        ]
-    )
+            sharpe = (
+                metrics[
+                    "Sharpe Ratio"
+                ]
+            )
 
 
-    buy_hold_return = (
-        metrics[
-            "Buy & Hold Return (%)"
-        ]
-    )
+            max_drawdown = (
+                metrics[
+                    "Max Drawdown (%)"
+                ]
+            )
 
 
-    strategy_vs_bh = (
-        metrics[
-            "Strategy vs Buy & Hold (%)"
-        ]
-    )
+            buy_hold_return = (
+                metrics[
+                    "Buy & Hold Return (%)"
+                ]
+            )
 
 
-    prompt = f"""
+            strategy_vs_bh = (
+                metrics[
+                    "Strategy vs Buy & Hold (%)"
+                ]
+            )
+
+
+            prompt = f"""
 Analyze the following historical
 market backtest results.
 
@@ -740,15 +890,13 @@ guarantees future returns.
 """
 
 
-    with st.spinner(
-        "AI is analyzing the market..."
-    ):
+            with st.spinner(
+                "AI is analyzing the market..."
+            ):
 
-        try:
-
-            ai_result = analyze_market(
-                prompt
-            )
+                ai_result = analyze_market(
+                    prompt
+                )
 
 
             st.success(
@@ -768,9 +916,9 @@ guarantees future returns.
             )
 
 
-# ==================================================
+# =
 # FOOTER
-# ==================================================
+# =
 
 st.info(
     "Historical market data is used for "
