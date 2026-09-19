@@ -1,15 +1,3 @@
-"""
-metrics.py
-Member 3 - Performance Metrics
-
-This module takes the equity curve (portfolio value over time) produced by
-backtest.py and calculates standard performance metrics used to judge a
-trading strategy.
-
-Main function:
-    calculate_metrics(equity_curve, benchmark_prices=None) -> dict
-"""
-
 import numpy as np
 import pandas as pd
 
