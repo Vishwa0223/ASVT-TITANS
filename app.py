@@ -20,7 +20,7 @@ from src.backtest import Backtester
 
 from src.metrics import calculate_metrics
 
-#from src.ai_analysis import analyze_market
+from src.ai_analysis import analyze_market
 
 
 # ==================================================
