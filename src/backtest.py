@@ -1,24 +1,3 @@
-"""
-backtest.py
-Member 3 - Backtesting Engine
-
-This module simulates trading a strategy over historical price data.
-
-Expected input:
-    A pandas DataFrame with at least these columns:
-        - 'Close'  : closing price of the asset
-        - 'signal' : trading signal for each row
-                     1  -> go LONG / BUY
-                     0  -> stay FLAT (no position)
-                    -1  -> SELL / exit position
-
-    This DataFrame is expected to come from Member 1's data_loader.py +
-    indicators.py, combined with Member 2's strategies.py output.
-
-Main class:
-    Backtester -> run a backtest and get results back (trades, equity curve, etc.)
-"""
-
 import pandas as pd
 
 
