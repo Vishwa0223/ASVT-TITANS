@@ -777,11 +777,11 @@ if st.button(
 
     # Check API key before importing AI module
 
-    if not os.getenv("OPENAI_API_KEY"):
+    if not os.getenv("FEATHERLESS_API_KEY"):
 
         st.warning(
             "AI analysis is currently unavailable. "
-            "An OpenAI API key is required."
+            "A Featherless API key is required."
         )
 
     else:
