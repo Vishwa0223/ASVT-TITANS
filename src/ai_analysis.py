@@ -14,7 +14,8 @@ def analyze_market(prompt):
 
     client = OpenAI(
         api_key=api_key,
-        base_url="https://api.featherless.ai/v1"
+        base_url="https://api.featherless.ai/v1",
+        timeout=20.0,
     )
 
     response = client.chat.completions.create(
