@@ -5,7 +5,6 @@ from openai import OpenAI
 
 load_dotenv()
 
-
 def analyze_market(prompt):
     api_key = os.getenv("FEATHERLESS_API_KEY")
     if not api_key:
