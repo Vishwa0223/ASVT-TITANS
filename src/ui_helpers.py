@@ -33,7 +33,7 @@ def apply_theme() -> None:
         """
         <style>
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
-        :root { --text:#493129; --muted:#765f59; --border:#ead8cc; --surface:#fff8f0; --canvas:#ffeedd; --accent:#8b597b; --pink:#efa3a0; --peach:#ffdcca; }
+        :root { --text:#493129; --muted:#493129; --border:#ead8cc; --surface:#fff8f0; --canvas:#ffeedd; --accent:#8b597b; --pink:#efa3a0; --peach:#ffdcca; --sandal:#c8a18e; --sandal-dark:#a97862; }
         html, body, button, input, textarea, select { font-family:'DM Sans', 'Segoe UI', sans-serif; }
         html, body { overflow-x:hidden; }
         h1, h2, h3, h4, [data-testid="stMetricValue"], .brand-title, .section-title, .topbar { font-family:'Playfair Display', Georgia, serif; }
@@ -42,8 +42,13 @@ def apply_theme() -> None:
             color:var(--text);
         }
         [data-testid="stHeader"] { background:rgba(255,238,219,.86); }
+        [data-testid="stHeader"] button, [data-testid="stHeader"] svg, [data-testid="stSidebar"] svg { color:var(--text); fill:currentColor; }
         [data-testid="stSidebar"] { background:#f8e5dc; border-right:1px solid var(--border); }
+        [data-testid="stSidebarNav"] { display:none; }
         [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] { color:var(--text); }
+        .stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp p, [data-testid="stMetricLabel"], [data-testid="stMetricValue"], [data-testid="stMetricDelta"] { color:var(--text); }
+        .stApp * { color:var(--text); }
+        .stApp svg { color:var(--text) !important; fill:currentColor; }
         .block-container { max-width:1500px; padding-top:1.6rem; padding-bottom:3rem; }
         .topbar, .glass-panel {
             background:rgba(255,248,240,.84);
@@ -54,7 +59,7 @@ def apply_theme() -> None:
         .glass-panel { padding:1rem; }
         .brand-wrap { display:flex; align-items:center; gap:.7rem; }
         .brand-mark { width:2.2rem; height:2.2rem; display:flex; align-items:center; justify-content:center;
-            border-radius:.75rem; background:var(--accent); color:#fff8f0; border:1px solid #744765; font-weight:800; }
+            border-radius:.75rem; background:var(--accent); color:var(--text); border:1px solid #744765; font-weight:800; }
         .brand-title { color:var(--text); font-weight:700; letter-spacing:.02em; }
         .brand-sub, .muted { color:var(--muted); }
         .brand-sub { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; }
@@ -64,7 +69,12 @@ def apply_theme() -> None:
             background:var(--pink); color:var(--text); font-weight:700; transition:all .2s ease; }
         .stButton > button:hover { border-color:var(--accent); background:var(--peach); color:var(--text); }
         .stMetric { background:rgba(255,248,240,.8); border:1px solid var(--border); border-radius:.9rem; padding:.65rem; }
-        .stDataFrame { border-radius:.9rem; overflow:hidden; }
+        .stDataFrame { border-radius:.9rem; overflow:hidden; background:var(--sandal) !important; border:1px solid var(--sandal-dark); box-shadow:0 10px 24px rgba(73,49,41,.1); }
+        [data-testid="stDataFrame"] > div { background:var(--sandal) !important; }
+        [data-testid="stDataFrame"] [role="columnheader"] { background:var(--sandal-dark) !important; color:var(--text) !important; font-weight:700; }
+        [data-testid="stDataFrame"] [role="gridcell"] { background:var(--sandal) !important; color:var(--text) !important; border-color:rgba(73,49,41,.16) !important; }
+        [data-testid="stDataFrame"] [role="gridcell"]:hover { background:#d7b7a5 !important; }
+        [data-testid="stDataFrame"] svg, [data-testid="stDataFrame"] button { color:var(--text) !important; fill:currentColor; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -87,7 +97,7 @@ def render_sidebar(active_page: str) -> None:
         st.markdown("<div class='brand-wrap'><div class='brand-mark'>Q</div><div><div class='brand-title'>QuantX</div><div class='brand-sub'>Financial Intelligence</div></div></div>", unsafe_allow_html=True)
         st.markdown("<div class='section-label' style='margin-top:1.2rem;'>Explore</div>", unsafe_allow_html=True)
         pages = [
-            ("app.py", "Home", ":material/home:"),
+            ("app.py", "Dashboard", ":material/home:"),
             ("pages/1_📈_Markets.py", "Markets", ":material/show_chart:"),
             ("pages/2_🧠_Strategies.py", "Strategies", ":material/psychology:"),
             ("pages/3_🔬_Backtesting.py", "Backtesting", ":material/science:"),
@@ -99,6 +109,21 @@ def render_sidebar(active_page: str) -> None:
                 st.markdown(f"**{icon} {label}**")
             else:
                 st.page_link(path, label=label, icon=icon)
+
+
+def style_table(data: pd.DataFrame):
+    return (
+        data.style
+        .set_properties(**{
+            "background-color": "#c8a18e",
+            "color": "#493129",
+            "border-color": "#a97862",
+        })
+        .set_table_styles([
+            {"selector": "th", "props": [("background-color", "#a97862"), ("color", "#493129"), ("font-weight", "700")]},
+            {"selector": "tr:hover td", "props": [("background-color", "#d7b7a5")]},
+        ])
+    )
 
 
 @st.cache_data(ttl=900, show_spinner=False)
@@ -154,7 +179,7 @@ def add_signal_traces(fig: go.Figure, data: pd.DataFrame, strategy_name: str = "
             y=buys["Close"],
             mode="markers",
             name="BUY",
-            marker={"color": "#8b597b", "symbol": "triangle-up", "size": 11, "line": {"color": "#fff0e6", "width": 1}},
+            marker={"color": "#8b597b", "symbol": "triangle-up", "size": 11, "line": {"color": "#493129", "width": 1}},
             customdata=[strategy_name] * len(buys),
             hovertemplate="BUY SIGNAL<br>Date: %{x|%Y-%m-%d}<br>Price: $%{y:,.2f}<br>Strategy: %{customdata}<extra></extra>",
         ))
@@ -164,7 +189,7 @@ def add_signal_traces(fig: go.Figure, data: pd.DataFrame, strategy_name: str = "
             y=sells["Close"],
             mode="markers",
             name="SELL",
-            marker={"color": "#efa3a0", "symbol": "triangle-down", "size": 11, "line": {"color": "#fff0e6", "width": 1}},
+            marker={"color": "#efa3a0", "symbol": "triangle-down", "size": 11, "line": {"color": "#493129", "width": 1}},
             customdata=[strategy_name] * len(sells),
             hovertemplate="SELL SIGNAL<br>Date: %{x|%Y-%m-%d}<br>Price: $%{y:,.2f}<br>Strategy: %{customdata}<extra></extra>",
         ))

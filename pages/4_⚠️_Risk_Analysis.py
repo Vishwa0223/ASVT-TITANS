@@ -40,6 +40,6 @@ first, second = pairs[pair_labels.index(pair_label)]
 rolling = calculate_rolling_correlation(prices[[first, second]], window=30)
 rolling_series = rolling.xs(second, level=1)[first].dropna()
 rolling_fig = go.Figure(go.Scatter(x=rolling_series.index, y=rolling_series, name="30-day rolling correlation", line={"color": "#4cc9f0", "width": 2.1}))
-rolling_fig.add_hline(y=0, line_dash="dot", line_color="rgba(255,255,255,.3)")
+rolling_fig.add_hline(y=0, line_dash="dot", line_color="rgba(73,49,41,.3)")
 rolling_fig.update_layout(title=f"30-day rolling correlation · {first} / {second}", **chart_layout(320))
 st.plotly_chart(rolling_fig, width="stretch", config={"displayModeBar": False})

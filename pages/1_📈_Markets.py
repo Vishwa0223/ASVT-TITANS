@@ -14,6 +14,7 @@ from src.ui_helpers import (
     render_sidebar,
     signal_label,
     signal_summary,
+    style_table,
 )
 
 st.set_page_config(page_title="QuantX | Markets", page_icon="📈", layout="wide")
@@ -45,7 +46,7 @@ signal_columns[3].metric("HOLD / no signal", summary["hold_count"])
 last_buy = pd.Timestamp(summary["last_buy"]).strftime("%Y-%m-%d") if summary["last_buy"] is not None else "None"
 last_sell = pd.Timestamp(summary["last_sell"]).strftime("%Y-%m-%d") if summary["last_sell"] is not None else "None"
 st.markdown(
-    f"<div class='glass-panel'><div class='section-label'>Current signal</div><div style='font-size:1.8rem;font-weight:800;color:{'#69e49b' if summary['latest'] == 'BUY' else '#ff7b9b' if summary['latest'] == 'SELL' else '#c4d0e4'};'>{'🟢' if summary['latest'] == 'BUY' else '🔴' if summary['latest'] == 'SELL' else '⚪'} {summary['latest']}</div><div class='muted' style='margin-top:.5rem;'>Last BUY signal: {last_buy} · Last SELL signal: {last_sell}</div></div>",
+    f"<div class='glass-panel'><div class='section-label'>Current signal</div><div style='font-size:1.8rem;font-weight:800;color:#493129;'>{'🟢' if summary['latest'] == 'BUY' else '🔴' if summary['latest'] == 'SELL' else '⚪'} {summary['latest']}</div><div class='muted' style='margin-top:.5rem;'>Last BUY signal: {last_buy} · Last SELL signal: {last_sell}</div></div>",
     unsafe_allow_html=True,
 )
 
@@ -64,4 +65,4 @@ events = strategy_data[(strategy_data["Signal"].isin([1, -1])) & (changes != 0)]
 events["Date"] = events.index.strftime("%Y-%m-%d")
 events["Price"] = events["Close"].round(2)
 events["Signal"] = events["Signal"].map(signal_label)
-st.dataframe(events[["Date", "Price", "Signal"]].tail(30), width="stretch", hide_index=True)
+st.dataframe(style_table(events[["Date", "Price", "Signal"]].tail(30)), width="stretch", hide_index=True)

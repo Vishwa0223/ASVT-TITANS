@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.ui_helpers import ASSET_TICKERS, STRATEGIES, aligned_comparison, apply_theme, chart_layout, render_header, render_sidebar, run_backtest
+from src.ui_helpers import ASSET_TICKERS, STRATEGIES, aligned_comparison, apply_theme, chart_layout, render_header, render_sidebar, run_backtest, style_table
 
 st.set_page_config(page_title="QuantX | Backtesting", page_icon="🔬", layout="wide")
 apply_theme()
@@ -66,4 +66,4 @@ st.subheader("Trade log")
 if trade_log.empty:
     st.info("No trades were generated for this configuration.")
 else:
-    st.dataframe(trade_log, width="stretch")
+    st.dataframe(style_table(trade_log), width="stretch")

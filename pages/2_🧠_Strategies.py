@@ -1,7 +1,7 @@
 import plotly.graph_objects as go
 import streamlit as st
 
-from src.ui_helpers import ASSET_TICKERS, STRATEGIES, add_price_trace, add_signal_traces, apply_strategy, apply_theme, chart_layout, load_asset_data, render_header, render_sidebar, signal_label, signal_points, signal_summary
+from src.ui_helpers import ASSET_TICKERS, STRATEGIES, add_price_trace, add_signal_traces, apply_strategy, apply_theme, chart_layout, load_asset_data, render_header, render_sidebar, signal_label, signal_points, signal_summary, style_table
 
 st.set_page_config(page_title="QuantX | Strategies", page_icon="🧠", layout="wide")
 apply_theme()
@@ -39,7 +39,7 @@ st.plotly_chart(fig, width="stretch", config={"displayModeBar": False})
 
 st.subheader("Strategy output")
 output_columns = [column for column in ["Close", "SMA_Short", "SMA_Long", "EMA", "Momentum", "Mean", "Deviation", "Signal"] if column in data]
-st.dataframe(data[output_columns].tail(30), width="stretch")
+st.dataframe(style_table(data[output_columns].tail(30)), width="stretch")
 
 st.subheader("Signal table")
 changes = data["Signal"].diff().fillna(data["Signal"])
@@ -47,4 +47,4 @@ events = data[(data["Signal"].isin([1, -1])) & (changes != 0)].copy()
 events["Date"] = events.index.strftime("%Y-%m-%d")
 events["Price"] = events["Close"].round(2)
 events["Signal"] = events["Signal"].map(signal_label)
-st.dataframe(events[["Date", "Price", "Signal"]].tail(40), width="stretch", hide_index=True)
+st.dataframe(style_table(events[["Date", "Price", "Signal"]].tail(40)), width="stretch", hide_index=True)
