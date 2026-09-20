@@ -102,6 +102,38 @@ st.markdown(
     .trust-label { color:#819bc1; font-size:.68rem; letter-spacing:.12em; text-transform:uppercase; line-height:1.4; }
     .footer { margin-top:3rem; padding:1.2rem 0 .5rem; border-top:1px solid rgba(148,163,184,.13); color:#8098bc; font-size:.75rem; }
     @media (max-width: 850px) { .pipeline { grid-template-columns:1fr; } .pipeline-step:not(:last-child)::after { content:"↓"; right:48%; top:auto; bottom:-1.2rem; } .stat-grid { grid-template-columns:repeat(2,1fr); } .site-nav { align-items:flex-start; } }
+    .site-nav, .research-panel, .asset-card, .layer-card, .pipeline-step, .bento-card, .preview-shell, .strategy-mini, .ai-box {
+        background:rgba(255,255,255,.92); border-color:#d9dee7; box-shadow:0 14px 34px rgba(31,41,55,.08);
+    }
+    .panel-kpi, .stat-cell { background:#f4f6f8; border-color:#e1e5eb; }
+    .hero-title, .section-title, .preview-title, .asset-name, .layer-title, .pipeline-title, .bento-title, .panel-kpi-value, .stat-cell strong, .trust-value { color:#1f2937; }
+    .brand-title { color:#1f2937; }
+    .brand-sub { color:#667085; }
+    .hero-copy, .section-copy, .bento-copy, .layer-copy, .pipeline-copy, .asset-meta, .hero-note, .panel-label, .panel-kpi-label, .stat-cell small, .strategy-mini span, .trust-label { color:#667085; }
+    .eyebrow, .asset-symbol, .preview-asset, .pipeline-num { color:#2563eb; }
+    .gradient-text { background:linear-gradient(100deg,#2563eb 10%,#0f766e 90%); background-clip:text; -webkit-background-clip:text; }
+    .hero-buttons [data-testid="stPageLink"] a, .cta-link [data-testid="stPageLink"] a { background:#1f2937; box-shadow:0 10px 24px rgba(31,41,55,.16); }
+    .hero-buttons .secondary [data-testid="stPageLink"] a { background:#fff; color:#1f2937; border-color:#cbd5e1; }
+    [data-testid="stAppViewContainer"]::before { opacity:.45; background-image:linear-gradient(rgba(31,41,55,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(31,41,55,.035) 1px, transparent 1px); }
+    html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main { background:linear-gradient(145deg,#fff3e7 0%,#ffeedd 52%,#f7e4df 100%) !important; color:#493129; }
+    [data-testid="stAppViewContainer"]::before { opacity:.24; background-image:radial-gradient(rgba(139,89,123,.12) 1px, transparent 1px); background-size:28px 28px; mask-image:linear-gradient(to bottom, black, transparent 70%); }
+    .site-nav, .research-panel, .asset-card, .layer-card, .pipeline-step, .bento-card, .preview-shell, .strategy-mini, .ai-box { background:rgba(255,248,240,.84) !important; border-color:#ead8cc !important; box-shadow:0 14px 34px rgba(73,49,41,.09) !important; }
+    .hero-title, .section-title, .preview-title, .asset-name, .layer-title, .pipeline-title, .bento-title, .panel-kpi-value, .stat-cell strong, .trust-value, .brand-title { color:#493129 !important; font-family:'Playfair Display', Georgia, serif; }
+    .hero-title { font-size:clamp(2.9rem,5vw,5.6rem); line-height:1.02; letter-spacing:-.035em; }
+    .section-title { letter-spacing:-.025em; }
+    .hero-copy, .section-copy, .bento-copy, .layer-copy, .pipeline-copy, .asset-meta, .hero-note, .panel-label, .panel-kpi-label, .stat-cell small, .strategy-mini span, .trust-label, .brand-sub { color:#765f59 !important; }
+    .eyebrow, .asset-symbol, .preview-asset, .pipeline-num { color:#8b597b !important; }
+    .gradient-text { background:linear-gradient(100deg,#8b597b 10%,#efa3a0 58%,#c47d83 95%); background-clip:text; -webkit-background-clip:text; color:transparent; }
+    .hero-buttons [data-testid="stPageLink"] a, .cta-link [data-testid="stPageLink"] a { background:#efa3a0 !important; border-color:#d58f91 !important; color:#493129 !important; box-shadow:0 10px 24px rgba(139,89,123,.14); }
+    .hero-buttons .secondary [data-testid="stPageLink"] a { background:#fff8f0 !important; color:#493129 !important; border-color:#ead8cc !important; }
+    .panel-kpi, .stat-cell { background:#fff3e7 !important; border-color:#ead8cc !important; }
+    .live-dot { background:#8b597b; box-shadow:0 0 12px rgba(139,89,123,.5); }
+    .market-strip::after { background:linear-gradient(90deg,rgba(139,89,123,.45),transparent); }
+    .asset-positive { color:#8b597b; }
+    .asset-negative { color:#b65f68; }
+    .layer-card:hover, .asset-card:hover { border-color:#efa3a0 !important; box-shadow:0 16px 34px rgba(139,89,123,.14); }
+    .pipeline-step:not(:last-child)::after { color:#8b597b; text-shadow:0 0 14px rgba(139,89,123,.35); }
+    @media (max-width: 850px) { .hero-wrap { padding:2.8rem 0 2rem; } .hero-title { font-size:clamp(2.4rem,12vw,4rem); } .panel-kpis { grid-template-columns:1fr; } }
     </style>
     """,
     unsafe_allow_html=True,
