@@ -32,31 +32,38 @@ def apply_theme() -> None:
     st.markdown(
         """
         <style>
-        :root { --text:#edf6ff; --muted:#a8bddf; --border:rgba(148,163,184,.15); }
-        html, body, [data-testid="stAppViewContainer"] {
-            background:linear-gradient(180deg,#050d1d 0%,#0b1630 42%,#0b1021 100%);
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap');
+        :root { --text:#493129; --muted:#765f59; --border:#ead8cc; --surface:#fff8f0; --canvas:#ffeedd; --accent:#8b597b; --pink:#efa3a0; --peach:#ffdcca; }
+        html, body, button, input, textarea, select { font-family:'DM Sans', 'Segoe UI', sans-serif; }
+        html, body { overflow-x:hidden; }
+        h1, h2, h3, h4, [data-testid="stMetricValue"], .brand-title, .section-title, .topbar { font-family:'Playfair Display', Georgia, serif; }
+        html, body, .stApp, [data-testid="stAppViewContainer"], [data-testid="stAppViewContainer"] > .main {
+            background:linear-gradient(145deg,#fff3e7 0%,#ffeedd 52%,#f7e4df 100%);
             color:var(--text);
         }
-        .block-container { max-width:1500px; padding-top:1.3rem; padding-bottom:3rem; }
+        [data-testid="stHeader"] { background:rgba(255,238,219,.86); }
+        [data-testid="stSidebar"] { background:#f8e5dc; border-right:1px solid var(--border); }
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] { color:var(--text); }
+        .block-container { max-width:1500px; padding-top:1.6rem; padding-bottom:3rem; }
         .topbar, .glass-panel {
-            background:linear-gradient(180deg,rgba(14,25,44,.92),rgba(10,17,29,.84));
+            background:rgba(255,248,240,.84);
             border:1px solid var(--border); border-radius:1rem;
-            box-shadow:0 18px 42px rgba(2,8,23,.36);
+            box-shadow:0 14px 32px rgba(73,49,41,.09);
         }
         .topbar { padding:.8rem 1rem; margin-bottom:1.2rem; }
         .glass-panel { padding:1rem; }
         .brand-wrap { display:flex; align-items:center; gap:.7rem; }
         .brand-mark { width:2.2rem; height:2.2rem; display:flex; align-items:center; justify-content:center;
-            border-radius:.75rem; background:linear-gradient(135deg,rgba(76,201,240,.35),rgba(123,97,255,.55));
-            border:1px solid rgba(255,255,255,.14); font-weight:800; }
-        .brand-title { font-weight:800; letter-spacing:.04em; }
+            border-radius:.75rem; background:var(--accent); color:#fff8f0; border:1px solid #744765; font-weight:800; }
+        .brand-title { color:var(--text); font-weight:700; letter-spacing:.02em; }
         .brand-sub, .muted { color:var(--muted); }
         .brand-sub { font-size:.68rem; letter-spacing:.08em; text-transform:uppercase; }
         .section-label { color:var(--muted); font-size:.7rem; letter-spacing:.13em; text-transform:uppercase;
             font-weight:700; margin-bottom:.65rem; }
-        .stButton > button { border-radius:.75rem; border:1px solid rgba(148,163,184,.2);
-            background:linear-gradient(135deg,rgba(58,134,255,.2),rgba(123,97,255,.2)); color:var(--text); font-weight:700; }
-        .stMetric { background:rgba(10,18,35,.6); border:1px solid var(--border); border-radius:.9rem; padding:.65rem; }
+        .stButton > button { border-radius:.7rem; border:1px solid #d58f91;
+            background:var(--pink); color:var(--text); font-weight:700; transition:all .2s ease; }
+        .stButton > button:hover { border-color:var(--accent); background:var(--peach); color:var(--text); }
+        .stMetric { background:rgba(255,248,240,.8); border:1px solid var(--border); border-radius:.9rem; padding:.65rem; }
         .stDataFrame { border-radius:.9rem; overflow:hidden; }
         </style>
         """,
@@ -147,7 +154,7 @@ def add_signal_traces(fig: go.Figure, data: pd.DataFrame, strategy_name: str = "
             y=buys["Close"],
             mode="markers",
             name="BUY",
-            marker={"color": "#4ade80", "symbol": "triangle-up", "size": 11, "line": {"color": "#d9ffe6", "width": 1}},
+            marker={"color": "#8b597b", "symbol": "triangle-up", "size": 11, "line": {"color": "#fff0e6", "width": 1}},
             customdata=[strategy_name] * len(buys),
             hovertemplate="BUY SIGNAL<br>Date: %{x|%Y-%m-%d}<br>Price: $%{y:,.2f}<br>Strategy: %{customdata}<extra></extra>",
         ))
@@ -157,7 +164,7 @@ def add_signal_traces(fig: go.Figure, data: pd.DataFrame, strategy_name: str = "
             y=sells["Close"],
             mode="markers",
             name="SELL",
-            marker={"color": "#ff5f7a", "symbol": "triangle-down", "size": 11, "line": {"color": "#ffd6df", "width": 1}},
+            marker={"color": "#efa3a0", "symbol": "triangle-down", "size": 11, "line": {"color": "#fff0e6", "width": 1}},
             customdata=[strategy_name] * len(sells),
             hovertemplate="SELL SIGNAL<br>Date: %{x|%Y-%m-%d}<br>Price: $%{y:,.2f}<br>Strategy: %{customdata}<extra></extra>",
         ))
@@ -165,16 +172,16 @@ def add_signal_traces(fig: go.Figure, data: pd.DataFrame, strategy_name: str = "
 
 def chart_layout(height: int = 430) -> dict:
     return {
-        "template": "plotly_dark",
+        "template": "plotly_white",
         "paper_bgcolor": "rgba(0,0,0,0)",
-        "plot_bgcolor": "rgba(13,23,38,.9)",
+        "plot_bgcolor": "#fff8f0",
         "height": height,
         "margin": {"l": 8, "r": 8, "t": 18, "b": 8},
         "hovermode": "x unified",
-        "font": {"color": "#edf6ff"},
+        "font": {"color": "#493129", "family": "DM Sans, Segoe UI, sans-serif"},
         "xaxis": {
             "showgrid": True,
-            "gridcolor": "rgba(148,163,184,.12)",
+            "gridcolor": "#ead8cc",
             "zeroline": False,
             "rangeselector": {
                 "buttons": [
@@ -185,12 +192,12 @@ def chart_layout(height: int = 430) -> dict:
                     {"count": 5, "label": "5Y", "step": "year", "stepmode": "backward"},
                     {"label": "ALL", "step": "all"},
                 ],
-                "bgcolor": "rgba(14,25,44,.9)",
-                "activecolor": "#3a86ff",
-                "font": {"color": "#edf6ff"},
+                "bgcolor": "#ffeedd",
+                "activecolor": "#8b597b",
+                "font": {"color": "#493129"},
             },
         },
-        "yaxis": {"showgrid": True, "gridcolor": "rgba(148,163,184,.12)", "zeroline": False},
+        "yaxis": {"showgrid": True, "gridcolor": "#ead8cc", "zeroline": False},
     }
 
 
